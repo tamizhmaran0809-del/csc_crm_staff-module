@@ -3,79 +3,60 @@
 {% load static %}
 {% block content %}
 
-
-
-<!-- ===== HEADER ===== -->
+<!-- ====== Header ======= -->
 <div class="over-top-header">
 
-<div>
-<h1>Overview</h1>
-<p>Staff Performance Dashboard</p>
-</div>
+    <div class="header-left">
 
-<div class="over-header-buttons">
-    
-<!-- Edite Button -->
-<a href="{% url 'staff_export' staff.id %}" class="over-export-btn">
-     Export
-</a>
+        <!-- Hamburger -->
+        <button class="nav-toggle" id="navToggle">
+            <i class="fas fa-bars"></i>
+        </button>
 
-<!-- Back Button -->
-<a href="{% url 'staff_management' %}" class="over-back-btn">
-     Back
-</a>
+        <div>
+            <h1>Overview</h1>
+            <p>Staff Performance Dashboard</p>
+        </div>
 
-</div>
+    </div>
 
-</div>
-
-<!-- Main navbar -->
- <div class="main-nav">
-
-<!-- Module Navigation Tabs -->
-     <!-- Mobile Hamburger -->
-<button class="nav-toggle" id="navToggle">
-    <i class="fas fa-bars"></i>
-</button>
-
-<!-- Module Navigation Tabs -->
-<nav class="nav-tabs" id="navTabs">
-
-    <a href="#" 
-       class="nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-nav-tab{% endif %}">
-       Overview
-    </a>
-
-    <a href="{% url 'attendance' staff.id %}"
-       class="nav-tab-link {% if request.resolver_match.url_name == 'Attendance' %}active-nav-tab{% endif %}">
-       Attendance
-    </a>
-
-    <a href="#" 
-       class="nav-tab-link {% if request.resolver_match.url_name == 'Performance' %}active-nav-tab{% endif %}">
-       Performance
-    </a>
-
-    <a href="#"
-       class="nav-tab-link {% if request.resolver_match.url_name == 'Documents' %}active-nav-tab{% endif %}">
-       Documents
-    </a>
-
-    <a href="#"
-       class="nav-tab-link {% if request.resolver_match.url_name == 'Activity Logs' %}active-nav-tab{% endif %}">
-       Activity Logs
-    </a>
-
-    <div class="nav-header-right">
-        <a href="{% url 'edit_staff' staff.id %}" class="over-edit-btn">
-            Edit
+    <div class="over-header-buttons">
+        <a href="{% url 'staff_management' %}" class="over-back-btn">
+            Back
         </a>
     </div>
 
+</div>
+
+<nav class="nav-tabs" id="navTabs">
+
+    <a href="#" class="nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-nav-tab{% endif %}">
+        Overview
+    </a>
+
+    <a href="{% url 'attendance' staff.id %}" class="nav-tab-link">
+        Attendance
+    </a>
+
+    <a href="#" class="nav-tab-link">
+        Performance
+    </a>
+
+    <a href="#" class="nav-tab-link">
+        Documents
+    </a>
+
+    <a href="#" class="nav-tab-link">
+        Activity Logs
+    </a>
+
+    <div class="nav-header-right">
+        <a href="{% url 'edit_staff' staff.id %}" class="over-edit-btn">Edit</a>
+        <a href="{% url 'staff_export' staff.id %}" class="over-export-btn">Export</a>
+    </div>
 
 </nav>
 
-</div>
 <!-- ===== PROFILE ===== -->
 <div class="over-profile-card">
 
@@ -189,7 +170,7 @@ No
 <!-- CHART -->
     <div class="over-chart-area">
 
-        <svg viewBox="0 0 700 400">
+        <svg viewBox="-60 150 800 170">
 
             <!-- LEFT SIDE VALUES -->
             <text x="25" y="330" class="over-chart-text">0</text>
