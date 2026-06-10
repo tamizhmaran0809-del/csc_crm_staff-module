@@ -1,0 +1,427 @@
+
+{% extends 'staff/base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<!-- ===== HEADER ===== -->
+<div class="over-top-header">
+
+<div>
+<h1>Overview</h1>
+<p>Staff Performance Dashboard</p>
+</div>
+
+<div class="over-header-buttons">
+    
+<!-- Edite Button -->
+<a href="{% url 'staff_export' staff.id %}" class="over-export-btn">
+     Export
+</a>
+
+<!-- Back Button -->
+<a href="{% url 'staff_management' %}" class="over-back-btn">
+     Back
+</a>
+
+</div>
+
+</div>
+
+<!-- Main navbar -->
+ <div class="main-nav">
+
+<!-- Module Navigation Tabs -->
+     <!-- Mobile Hamburger -->
+<button class="nav-toggle" id="navToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Module Navigation Tabs -->
+<nav class="nav-tabs" id="navTabs">
+
+    <a href="#" 
+       class="nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-nav-tab{% endif %}">
+       Overview
+    </a>
+
+    <a href="{% url 'attendance' staff.id %}"
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Attendance' %}active-nav-tab{% endif %}">
+       Attendance
+    </a>
+
+    <a href="#" 
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Performance' %}active-nav-tab{% endif %}">
+       Performance
+    </a>
+
+    <a href="#"
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Documents' %}active-nav-tab{% endif %}">
+       Documents
+    </a>
+
+    <a href="#"
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Activity Logs' %}active-nav-tab{% endif %}">
+       Activity Logs
+    </a>
+
+    <div class="nav-header-right">
+        <a href="{% url 'edit_staff' staff.id %}" class="over-edit-btn">
+            Edit
+        </a>
+    </div>
+
+
+</nav>
+
+</div>
+<!-- ===== PROFILE ===== -->
+<div class="over-profile-card">
+
+    <!-- PART 1 : PROFILE IMAGE -->
+    <div class="over-profile-image">
+
+        {% if staff.profile_photo %}
+            <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
+        {% else %}
+            <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
+        {% endif %}
+
+        {% if staff.status == 'active' %}
+            <div class="over-online"></div>
+        {% else %}
+            <div class="over-offline"></div>
+        {% endif %}
+
+    </div>
+
+    <!-- PART 2 : NAME + BADGES -->
+    <div class="over-profile-details">
+
+        <h1 class="over-name">
+            {{ staff.first_name }} {{ staff.last_name }}
+        </h1>
+
+        <div class="over-badges">
+            <div class="over-badge over-badge-blue">
+                {{ staff.department }}
+            </div>
+
+            <div class="over-badge status-{{ staff.status }}">
+                {{ staff.get_status_display }}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PART 3 : INFO -->
+    <div class="over-info">
+        <p><strong>EMP ID:</strong> {{ staff.employee_id }}</p>
+        <p><strong>Role:</strong> {{ staff.role }}</p>
+        <p><strong>Phone:</strong> {{ staff.phone }}</p>
+        <p><strong>Date Of Birth:</strong> {{ staff.date_of_birth }}</p>
+    </div>
+
+    <!-- PART 4 : INFO2 -->
+    <div class="over-info2">
+        <p><strong>Joining:</strong> {{ staff.date_of_joining }}</p>
+        <p><strong>Email:</strong> {{ staff.email }}</p>
+        <p><strong>Performance:</strong> {{ staff.performance_rating }}/5</p>
+    </div>
+
+</div>
+<!-- ===== KPI CARDS ===== -->
+<div class="over-cards">
+
+<div class="over-card">
+<div class="over-card-icon blue"><i class="fa fa-users"></i></div>
+<h3>Assigned Leads</h3>
+<h2>{{ assigned_leads }}</h2>
+</div>
+
+<div class="over-card">
+<div class="over-card-icon green"><i class="fa fa-check"></i></div>
+<h3>Converted Leads</h3>
+<h2>{{ converted_leads }}</h2>
+</div>
+
+<div class="over-card">
+<div class="over-card-icon orange"><i class="fa fa-clock"></i></div>
+<h3>Pending Leads</h3>
+<h2>{{ pending_leads }}</h2>
+</div>
+
+<div class="over-card">
+<div class="over-card-icon purple"><i class="fa fa-indian-rupee-sign"></i></div>
+<h3>Revenue</h3>
+<h2>₹{{ total_revenue }}</h2>
+</div>
+
+<div class="over-card">
+<div class="over-card-icon cyan"><i class="fa fa-calendar"></i></div>
+<h3>Present Today</h3>
+<h2>
+{% if today_status == "Present" or today_status == "Late" %}
+Yes
+{% else %}
+No
+{% endif %}
+</h2>
+</div>
+
+<div class="over-card">
+<div class="over-card-icon red"><i class="fa fa-star"></i></div>
+<h3>Rating</h3>
+<h2>{{ staff.performance_rating }}/5</h2>
+</div>
+
+</div>
+
+<!-- ===== MAIN GRID ===== -->
+<div class="over-main-grid">
+
+<!-- PERFORMANCE GRAPH -->
+<div class="over-chart">
+
+<h2 class="over-chart-title">Performance Overview</h2>
+
+<!-- CHART -->
+    <div class="over-chart-area">
+
+        <svg viewBox="0 0 700 400">
+
+            <!-- LEFT SIDE VALUES -->
+            <text x="25" y="330" class="over-chart-text">0</text>
+            <text x="18" y="290" class="over-chart-text">20</text>
+            <text x="18" y="250" class="over-chart-text">40</text>
+            <text x="18" y="210" class="over-chart-text">60</text>
+            <text x="18" y="170" class="over-chart-text">80</text>
+            <text x="10" y="130" class="over-chart-text">100</text>
+
+            <!-- GRID LINES -->
+            <line x1="50" y1="320" x2="650" y2="320" class="over-grid-line"/>
+            <line x1="50" y1="280" x2="650" y2="280" class="over-grid-line"/>
+            <line x1="50" y1="240" x2="650" y2="240" class="over-grid-line"/>
+            <line x1="50" y1="200" x2="650" y2="200" class="over-grid-line"/>
+            <line x1="50" y1="160" x2="650" y2="160" class="over-grid-line"/>
+            <line x1="50" y1="120" x2="650" y2="120" class="over-grid-line"/>
+
+            <!-- LEFT SIDE VERTICAL LINE -->
+            <line 
+                x1="50" 
+                y1="120" 
+                x2="50" 
+                y2="320" 
+                class="over-left-line"
+            />
+            
+            <!-- GRID LINES -->
+            <line x1="50" y1="320" x2="650" y2="320" class="over-grid-line"/>
+
+            <!-- THIS MONTH LINE -->
+            <polyline
+                class="over-performance-blueline"
+                points=""
+            />
+
+            <!-- LAST MONTH LINE -->
+            <polyline
+                class="over-performance-greenline"
+                points=""
+            />
+
+
+            <!-- BOTTOM WEEK TEXT -->
+            <text x="42" y="355" class="over-week-text">W1</text>
+            <text x="172" y="355" class="over-week-text">W2</text>
+            <text x="302" y="355" class="over-week-text">W3</text>
+            <text x="432" y="355" class="over-week-text">W4</text>
+            <text x="612" y="355" class="over-week-text">W5</text>
+
+        </svg>
+        {{ week_data_this|json_script:"week-data-this" }}
+        {{ week_data_last|json_script:"week-data-last" }}
+
+        <div class="over-chart-para">
+
+            <p class="over-chart-para1"><span>This Month</span> <i class="fa-solid fa-chart-line"></i> : {{ week_data_this }}</p>
+        <p class="over-chart-para2"><span>Last Month</span> <i class="fa-solid fa-chart-line"></i> : {{ week_data_last }}</p>
+
+        </div>
+
+    </div>
+
+<!-- TARGET -->
+<div class="over-target-section">
+
+<h4>Monthly Target Progress</h4>
+
+<div class="over-target-flex">
+
+<div>
+<p>Target</p>
+<h3>{{ staff.monthly_target }}</h3>
+</div>
+
+<div>
+<p>Completed</p>
+<h3>₹{{ total_revenue }}</h3>
+</div>
+
+<div>
+<p>Progress</p>
+<h3>{{ progress_percentage }}%</h3>
+</div>
+
+</div>
+
+<div class="over-progress">
+<div class="over-progress-bar"
+style="width:{{ progress_percentage }}%;">
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= ATTENDANCE =============== -->
+<div class="over-box-attendance">
+
+    <h2 class="over-box-attendance-title">
+        Attendance Overview
+
+    <span class="status-badge-over
+        {% if today_status == 'Present' %} present-badge-over
+        {% elif today_status == 'Absent' %} absent-badge-over
+        {% elif today_status == 'Leave' %} leave-badge-over
+        {% elif today_status == 'Late' %} late-badge-over
+        {% endif %}">
+       {{ today_status }}
+    </span>
+    </h2>
+
+    {% if today_attendance %}
+
+    <div class="over-attendance-grid">
+
+        <div class="over-attendance-item">
+            <p>Login</p>
+            <h3>{% if today_attendance %}
+                {{ today_attendance.log_in|time:"h:i A" }}
+            {% else %}
+                --
+            {% endif %}</h3>
+        </div>
+
+        <div class="over-attendance-item">
+            <p>Logout</p>
+            <h3>{% if today_attendance %}
+                {{ today_attendance.log_out|time:"h:i A" }}
+            {% else %}
+                --
+            {% endif %}</h3>
+        </div>
+        </div>
+
+        <div class="over-attendance-item2">
+            <p>Working Hours</p>
+            
+            <h3>{% if today_attendance %}
+                {{ today_attendance.total_hours }}
+            {% else %}
+                --
+            {% endif %}</h3>
+        </div>
+
+    {% else %}
+        <p class="over-no-attendance">No attendance today</p>
+    {% endif %}
+
+</div>
+</div>
+
+<!--==================== Recent Lead ==========================-->
+
+{% if staff.department.dept_name == "sales" or staff.department.dept_name == "telecall" %}
+<div class="over-box-recent">
+
+<h2>Recent Leads</h2>
+
+<table>
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Status</th>
+</tr>
+
+{% if recent_leads %}
+    {% for lead in recent_leads %}
+        <tr>
+            <td>{{ lead.name }}</td>
+            <td>{{ lead.phone }}</td>
+            <td>{{ lead.status }}</td>
+        </tr>
+    {% endfor %}
+{% else %}
+<tr>
+    <td colspan="3" class="over-recent-no">No recent leads found</td>
+</tr>
+{% endif %}
+
+</table>
+
+</div>
+{% endif %}
+
+<!--==================== Meeting & Class Schedule ==========================-->
+
+{% if staff.department.dept_name == "trainers" %}
+<div class="over-box-trainers">
+
+    <h2>Meeting & Class Schedule</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Class / Meeting</th>
+                <th>Topic</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in schedules %}
+            <tr>
+                <td>{{ item.date }}</td>
+                <td>{{ item.time }}</td>
+                <td>{{ item.get_type_display }}</td>
+                <td>{{ item.topic }}</td>
+
+                {% if item.status == "upcoming" %}
+                    <td class="upcoming">Upcoming</td>
+                {% else %}
+                    <td class="completed">Completed</td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="over-trainers-no">No schedules available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+{% endif %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/staff_js/overview.js' %}"></script>
+{% endblock %}
+
+
+{% endblock %}
