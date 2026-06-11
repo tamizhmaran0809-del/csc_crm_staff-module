@@ -255,7 +255,7 @@ body.menu-open::before{
 .over-profile-image{
     position: relative;
     display: inline-block;
-    width:120px;
+    width:130px;
     margin:auto auto auto 40px;
 }
 
@@ -336,23 +336,23 @@ body.menu-open::before{
 
 /* Badge color */
 .status-active{
-    background:#31ff7d;
-    color: #11843b;
+    background-color: rgb(3, 175, 3);
+    color: white;
 }
 
 .status-inactive{
-    background:#9ea5b3ac;
-    color: #000000;
+    background:#a855f7;;
+    color: #f6f4f4;
 }
 
 .status-on_leave{
-    background:#fab915;
-    color:#5b4610;
+    background:#f58a0f;
+    color:#faf9f6;
 }
 
 .status-terminated{
     background:#ff2807;
-    color: rgb(19, 14, 14);
+    color: rgb(255, 255, 255);
 }
 
 /* Info */
